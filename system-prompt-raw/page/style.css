@@ -12,7 +12,7 @@ main {
 /* ---------- header ---------- */
 
 .head {
-  margin-bottom: 22px;
+  margin-bottom: 20px;
 }
 
 .head h1 {
@@ -34,18 +34,10 @@ main {
 
 .rail {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.chips {
-  display: flex;
   flex-wrap: wrap;
-  gap: 7px;
-  flex: 1;
-  min-height: 32px;
   align-items: center;
+  gap: 7px;
+  margin-bottom: 16px;
 }
 
 .chip {
@@ -62,18 +54,29 @@ main {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  transition: border-color 0.15s, background 0.15s, color 0.15s, opacity 0.15s;
 }
 
 .chip:hover {
   border-color: var(--line-strong);
 }
 
+/* enabled: filled; disabled: hollow and dimmed; both can be selected */
 .chip.on {
   color: #fff;
   background: var(--accent);
   border-color: var(--accent);
   font-weight: 600;
+}
+
+.chip.off {
+  color: var(--muted);
+  border-style: dashed;
+  opacity: 0.75;
+}
+
+.chip.sel {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
 .rail-empty {
@@ -86,8 +89,9 @@ main {
   flex: 0 0 auto;
   width: 30px;
   height: 30px;
+  margin-left: auto;
   font: inherit;
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1;
   color: var(--muted);
   background: transparent;
@@ -111,18 +115,29 @@ main {
   background: var(--magpie-card-bg, transparent);
 }
 
+.card:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
 .name {
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  padding: 13px 16px;
+  flex: 1;
+  min-width: 0;
   font: inherit;
   font-size: 14px;
   font-weight: 600;
   color: inherit;
   background: transparent;
   border: 0;
-  border-bottom: 1px solid var(--line);
+  padding: 0;
 }
 
 .name::placeholder {
@@ -131,11 +146,80 @@ main {
   opacity: 0.75;
 }
 
+.name:focus,
+#prompt:focus {
+  outline: none;
+}
+
+/* switch */
+
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  flex: 0 0 auto;
+  user-select: none;
+}
+
+.switch input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.track {
+  position: relative;
+  display: block;
+  width: 34px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--line-strong);
+  transition: background 0.18s;
+}
+
+.dot {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.22);
+  transition: transform 0.18s;
+}
+
+.switch input:checked + .track {
+  background: var(--accent);
+}
+
+.switch input:checked + .track .dot {
+  transform: translateX(14px);
+}
+
+.switch input:focus-visible + .track {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.switch-label {
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.switch-label.off {
+  color: var(--muted);
+  font-weight: 400;
+}
+
 #prompt {
   display: block;
   width: 100%;
   box-sizing: border-box;
-  min-height: 300px;
+  min-height: 290px;
   padding: 14px 16px;
   font: inherit;
   font-family: var(--mono);
@@ -147,16 +231,6 @@ main {
   resize: vertical;
   white-space: pre-wrap;
   tab-size: 2;
-}
-
-.name:focus,
-#prompt:focus {
-  outline: none;
-}
-
-.card:focus-within {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
 }
 
 .bar {
@@ -177,9 +251,9 @@ main {
 /* ---------- options ---------- */
 
 .opts {
-  margin: 18px 0 0;
   display: grid;
-  gap: 14px;
+  gap: 16px;
+  margin: 18px 0 0;
 }
 
 .opt {
@@ -192,7 +266,11 @@ main {
   font-size: 12px;
   font-weight: 600;
   color: var(--muted);
-  letter-spacing: 0.01em;
+}
+
+.opt-note {
+  font-weight: 400;
+  opacity: 0.75;
 }
 
 .opt-hint {
@@ -200,17 +278,14 @@ main {
   font-size: 11.5px;
   line-height: 1.5;
   color: var(--muted);
-  opacity: 0.85;
+  opacity: 0.9;
 }
-
-/* segmented control */
 
 .seg {
   display: inline-flex;
   padding: 2px;
   border: 1px solid var(--line);
   border-radius: 9px;
-  background: transparent;
 }
 
 .seg button {
@@ -270,7 +345,6 @@ details.more summary::-webkit-details-marker {
 details.more summary::before {
   content: "▸ ";
   display: inline-block;
-  transition: transform 0.15s;
 }
 
 details.more[open] summary::before {

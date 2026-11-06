@@ -11,16 +11,20 @@
 <main>
   <header class="head">
     <h1>系统提示词</h1>
-    <p>保存多套，点一下切换。注入时接在 agent 自己的提示词旁边，不会丢弃它。</p>
+    <p>可以保存多套，同时启用几套。绑定了模型的提示词只对该模型生效，其它提示词会自动让开。</p>
   </header>
 
-  <nav class="rail">
-    <div class="chips" id="chips"></div>
-    <button class="add" id="new" title="新建一套">＋</button>
-  </nav>
+  <nav class="rail" id="rail"></nav>
 
   <section class="card">
-    <input class="name" id="name" placeholder="未命名" autocomplete="off" spellcheck="false">
+    <div class="card-top">
+      <input class="name" id="name" placeholder="未命名" autocomplete="off" spellcheck="false">
+      <label class="switch" title="启用后才会真的注入">
+        <input type="checkbox" id="enabled">
+        <span class="track"><span class="dot"></span></span>
+        <span class="switch-label" id="enabledLabel">已启用</span>
+      </label>
+    </div>
 
     <textarea id="prompt" spellcheck="false" placeholder="在这里粘贴提示词原文，换行和引号都不用转义…"></textarea>
 
@@ -31,8 +35,14 @@
   </section>
 
   <section class="opts">
+    <label class="opt">
+      <span class="opt-label">绑定模型 <span class="opt-note">留空 = 所有模型可用</span></span>
+      <input id="match" placeholder="填模型名或关键词，逗号分隔，如 claude, gpt-5" autocomplete="off" spellcheck="false">
+      <p class="opt-hint" id="matchHint">留空表示不绑定：所有没被别的提示词占用的模型都会用上它。</p>
+    </label>
+
     <div class="opt">
-      <span class="opt-label">插入位置</span>
+      <span class="opt-label">注入位置 <span class="opt-note">全部提示词共用</span></span>
       <div class="seg" id="seg">
         <button type="button" data-v="append">追加在后面</button>
         <button type="button" data-v="prepend">放在前面</button>
@@ -41,23 +51,19 @@
       <input type="hidden" id="position" value="append">
     </div>
 
-    <details class="opt more">
-      <summary>筛选生效范围</summary>
+    <details class="more">
+      <summary>按 agent 筛选</summary>
       <div class="opt-body">
         <label class="opt">
-          <span class="opt-label">仅这些 agent</span>
-          <input id="agents" placeholder="全部，或填 claude, codex" autocomplete="off" spellcheck="false">
-        </label>
-        <label class="opt">
-          <span class="opt-label">仅这些模型前缀</span>
-          <input id="models" placeholder="全部，或填 deepseek, gpt-5" autocomplete="off" spellcheck="false">
+          <span class="opt-label">仅这些 agent <span class="opt-note">留空 = 全部</span></span>
+          <input id="agents" placeholder="claude, codex" autocomplete="off" spellcheck="false">
         </label>
       </div>
     </details>
   </section>
 
   <footer class="foot">
-    <button class="primary" id="save">保存并启用</button>
+    <button class="primary" id="save">保存</button>
     <button class="ghost" id="del">删除</button>
     <span class="status" id="status"></span>
   </footer>
