@@ -1,6 +1,6 @@
 {
   "name": "middleware-system-prompt-raw",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "New API's system_prompt as magpie middleware, with a plain-text settings page: paste the prompt as-is, no JSON escaping",
   "type": "module",
   "files": [
@@ -30,7 +30,8 @@
     },
     "options": {
       "system_prompt": "",
-      "position": "append"
+      "position": "append",
+      "presets": []
     }
   }
 }

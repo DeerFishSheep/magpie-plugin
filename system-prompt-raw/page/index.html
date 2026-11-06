@@ -9,30 +9,58 @@
 </head>
 <body>
 <main>
-  <p class="hint">直接粘贴原文。换行、引号、反引号、JSON 字符都不用转义，保存后原样注入。</p>
+  <header class="head">
+    <h1>系统提示词</h1>
+    <p>保存多套，点一下切换。注入时接在 agent 自己的提示词旁边，不会丢弃它。</p>
+  </header>
 
-  <textarea id="prompt" spellcheck="false" placeholder="在这里粘贴提示词原文…"></textarea>
-  <p class="meta"><span id="count">0 字 · 0 行</span><span id="dirty"></span></p>
+  <nav class="rail">
+    <div class="chips" id="chips"></div>
+    <button class="add" id="new" title="新建一套">＋</button>
+  </nav>
 
-  <label class="field">怎么和 agent 自带的提示词合并
-    <select id="position">
-      <option value="append">追加在后面 — 我的接在 agent 原提示词后面（推荐，不破坏提示词缓存）</option>
-      <option value="prepend">放在前面 — 我的放在 agent 原提示词最前面</option>
-    </select>
-  </label>
+  <section class="card">
+    <input class="name" id="name" placeholder="未命名" autocomplete="off" spellcheck="false">
 
-  <label class="field">仅对这些 agent 生效（逗号分隔，留空 = 全部）
-    <input id="agents" placeholder="claude, codex">
-  </label>
+    <textarea id="prompt" spellcheck="false" placeholder="在这里粘贴提示词原文，换行和引号都不用转义…"></textarea>
 
-  <label class="field">仅对这些模型前缀生效（逗号分隔，留空 = 全部）
-    <input id="models" placeholder="deepseek, gpt-5">
-  </label>
+    <div class="bar">
+      <span class="count" id="count">0 字 · 0 行</span>
+      <span class="dirty" id="dirty"></span>
+    </div>
+  </section>
 
-  <div class="actions">
-    <button id="save">保存</button>
-    <span id="status"></span>
-  </div>
+  <section class="opts">
+    <div class="opt">
+      <span class="opt-label">插入位置</span>
+      <div class="seg" id="seg">
+        <button type="button" data-v="append">追加在后面</button>
+        <button type="button" data-v="prepend">放在前面</button>
+      </div>
+      <p class="opt-hint" id="posHint">保持 agent 提示词缓存有效，通常选这个。</p>
+      <input type="hidden" id="position" value="append">
+    </div>
+
+    <details class="opt more">
+      <summary>筛选生效范围</summary>
+      <div class="opt-body">
+        <label class="opt">
+          <span class="opt-label">仅这些 agent</span>
+          <input id="agents" placeholder="全部，或填 claude, codex" autocomplete="off" spellcheck="false">
+        </label>
+        <label class="opt">
+          <span class="opt-label">仅这些模型前缀</span>
+          <input id="models" placeholder="全部，或填 deepseek, gpt-5" autocomplete="off" spellcheck="false">
+        </label>
+      </div>
+    </details>
+  </section>
+
+  <footer class="foot">
+    <button class="primary" id="save">保存并启用</button>
+    <button class="ghost" id="del">删除</button>
+    <span class="status" id="status"></span>
+  </footer>
 </main>
 <script src="app.js"></script>
 </body>
