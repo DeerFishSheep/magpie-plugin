@@ -2,21 +2,17 @@
 // The textarea holds the prompt as plain text. magpie.options.set() serialises
 // it, so the user never writes JSON or escapes a newline themselves.
 //
-// One select covers both upstream switches (override + position):
-//   append / prepend  -> override true,  prompt added after / before the agent's own
-//   off               -> override false, only used when the request has no prompt
+// The only switch is where the prompt goes: after the agent's own ("append",
+// the default, which keeps its prompt cache) or before it ("prepend").
 
 const $ = (id) => document.getElementById(id)
 const ta = $("prompt")
-const sel = $("mode")
+const sel = $("position")
 const agents = $("agents")
 const models = $("models")
 const statusEl = $("status")
 const countEl = $("count")
 const dirtyEl = $("dirty")
-
-// Defaults match package.json: enabled and working the moment it is installed.
-const DEFAULTS = { override: true, position: "append" }
 
 let base = {}
 let savedText = ""
@@ -36,9 +32,7 @@ function paint(o) {
   base = o && typeof o === "object" ? o : {}
   savedText = typeof base.system_prompt === "string" ? base.system_prompt : ""
   ta.value = savedText
-  const over = base.override === undefined ? DEFAULTS.override : !!base.override
-  const pos = base.position === "prepend" ? "prepend" : DEFAULTS.position
-  sel.value = over ? pos : "off"
+  sel.value = base.position === "prepend" ? "prepend" : "append"
   agents.value = Array.isArray(base.agents) ? base.agents.join(", ") : ""
   models.value = Array.isArray(base.models) ? base.models.join(", ") : ""
   refreshMeta()
@@ -46,13 +40,12 @@ function paint(o) {
 
 function collect() {
   // Prompt text goes in untrimmed, exactly as pasted.
-  const mode = sel.value
   const o = {
     ...base,
     system_prompt: ta.value,
-    override: mode !== "off",
-    position: mode === "prepend" ? "prepend" : "append",
+    position: sel.value === "prepend" ? "prepend" : "append",
   }
+  delete o.override
   const a = splitList(agents.value)
   const m = splitList(models.value)
   if (a.length) o.agents = a
