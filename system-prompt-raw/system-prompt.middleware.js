@@ -3,7 +3,7 @@
 // it: Anthropic's system, Chat's first system or developer message,
 // Responses' instructions, Gemini's systemInstruction.
 //
-//   {"system_prompt": "Answer in English.", "override": false,
+//   {"system_prompt": "Answer in English.", "override": true,
 //    "position": "append", "agents": [], "models": []}
 //
 // A request with no system prompt is given this one. One that has its own
@@ -12,6 +12,10 @@
 // default, which keeps a prompt cache on the agent's own prompt). agents
 // and models, when given, are the only agents and model name prefixes it
 // applies to.
+//
+// Fork note: override defaults to true here (upstream defaults to false),
+// matching the bundled settings page. Set "override": false to leave an
+// agent's own prompt untouched.
 
 export function onRequest(body, ctx) {
   const o = ctx.options || {}
@@ -20,7 +24,7 @@ export function onRequest(body, ctx) {
   if (Array.isArray(o.agents) && o.agents.length && !o.agents.includes(ctx.agent)) return
   if (Array.isArray(o.models) && o.models.length && !o.models.some((m) => typeof m === "string" && String(body.model ?? ctx.model ?? "").startsWith(m))) return
   const before = o.position === "prepend"
-  const over = !!o.override
+  const over = o.override === undefined ? true : !!o.override
   switch (ctx.protocol) {
     case "anthropic":
       return anthropic(body, prompt, over, before)

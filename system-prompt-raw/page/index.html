@@ -14,12 +14,11 @@
   <textarea id="prompt" spellcheck="false" placeholder="在这里粘贴提示词原文…"></textarea>
   <p class="meta"><span id="count">0 字 · 0 行</span><span id="dirty"></span></p>
 
-  <label class="chk"><input type="checkbox" id="override"> 覆盖 agent 自带的系统提示词</label>
-
-  <label class="field">插入位置
-    <select id="position">
-      <option value="append">append — 追加在后面（不破坏提示词缓存）</option>
-      <option value="prepend">prepend — 放在前面（New API 原版）</option>
+  <label class="field">怎么和 agent 自带的提示词合并
+    <select id="mode">
+      <option value="append">追加在后面 — agent 的原提示词保留，我的接在后面（推荐，不破坏提示词缓存）</option>
+      <option value="prepend">放在前面 — agent 的原提示词保留，我的放在最前</option>
+      <option value="off">不覆盖 — 只有 agent 没有提示词时才注入</option>
     </select>
   </label>
 

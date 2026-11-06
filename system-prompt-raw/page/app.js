@@ -1,16 +1,22 @@
 // Settings page for middleware-system-prompt-raw.
 // The textarea holds the prompt as plain text. magpie.options.set() serialises
 // it, so the user never writes JSON or escapes a newline themselves.
+//
+// One select covers both upstream switches (override + position):
+//   append / prepend  -> override true,  prompt added after / before the agent's own
+//   off               -> override false, only used when the request has no prompt
 
 const $ = (id) => document.getElementById(id)
 const ta = $("prompt")
-const cb = $("override")
-const sel = $("position")
+const sel = $("mode")
 const agents = $("agents")
 const models = $("models")
 const statusEl = $("status")
 const countEl = $("count")
 const dirtyEl = $("dirty")
+
+// Defaults match package.json: enabled and working the moment it is installed.
+const DEFAULTS = { override: true, position: "append" }
 
 let base = {}
 let savedText = ""
@@ -30,16 +36,23 @@ function paint(o) {
   base = o && typeof o === "object" ? o : {}
   savedText = typeof base.system_prompt === "string" ? base.system_prompt : ""
   ta.value = savedText
-  cb.checked = !!base.override
-  sel.value = base.position === "prepend" ? "prepend" : "append"
+  const over = base.override === undefined ? DEFAULTS.override : !!base.override
+  const pos = base.position === "prepend" ? "prepend" : DEFAULTS.position
+  sel.value = over ? pos : "off"
   agents.value = Array.isArray(base.agents) ? base.agents.join(", ") : ""
   models.value = Array.isArray(base.models) ? base.models.join(", ") : ""
   refreshMeta()
 }
 
 function collect() {
-  // Everything from the page: prompt text goes in untrimmed, exactly as pasted.
-  const o = { ...base, system_prompt: ta.value, override: cb.checked, position: sel.value }
+  // Prompt text goes in untrimmed, exactly as pasted.
+  const mode = sel.value
+  const o = {
+    ...base,
+    system_prompt: ta.value,
+    override: mode !== "off",
+    position: mode === "prepend" ? "prepend" : "append",
+  }
   const a = splitList(agents.value)
   const m = splitList(models.value)
   if (a.length) o.agents = a
@@ -56,8 +69,13 @@ async function save() {
     const sent = collect()
     const returned = await magpie.options.set(sent)
     paint(returned && typeof returned === "object" ? returned : sent)
-    statusEl.textContent = "已保存，下一个请求起生效"
-    statusEl.dataset.state = "ok"
+    if (!sent.system_prompt) {
+      statusEl.textContent = "已保存，但提示词是空的：不会注入任何内容"
+      statusEl.dataset.state = "err"
+    } else {
+      statusEl.textContent = "已保存，下一个请求起生效"
+      statusEl.dataset.state = "ok"
+    }
   } catch (err) {
     statusEl.textContent = "保存失败：" + (err && err.message ? err.message : String(err))
     statusEl.dataset.state = "err"
