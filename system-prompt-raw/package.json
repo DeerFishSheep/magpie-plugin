@@ -1,0 +1,19 @@
+{
+  "name": "middleware-system-prompt-raw",
+  "version": "0.2.0",
+  "description": "New API's system_prompt as magpie middleware, with a plain-text settings page: paste the prompt as-is, no JSON escaping",
+  "type": "module",
+  "files": ["system-prompt.middleware.js", "page", "README.md"],
+  "keywords": ["magpie", "magpie-middleware", "new-api", "system-prompt", "llm-gateway"],
+  "license": "MIT",
+  "magpie": {
+    "middleware": "./system-prompt.middleware.js",
+    "page": {
+      "title": "System prompt",
+      "titles": { "zh": "系统提示词", "zh-TW": "系統提示詞", "ja": "システムプロンプト" },
+      "file": "page/index.html",
+      "icon": "page/icon.svg"
+    },
+    "options": { "system_prompt": "", "override": true, "position": "append" }
+  }
+}

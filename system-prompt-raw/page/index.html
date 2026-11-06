@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>系统提示词</title>
+<link rel="stylesheet" href="style.css">
+<script src="_magpie/bridge.js"></script>
+</head>
+<body>
+<main>
+  <p class="hint">直接粘贴原文。换行、引号、反引号、JSON 字符都不用转义，保存后原样注入。</p>
+
+  <textarea id="prompt" spellcheck="false" placeholder="在这里粘贴提示词原文…"></textarea>
+  <p class="meta"><span id="count">0 字 · 0 行</span><span id="dirty"></span></p>
+
+  <label class="chk"><input type="checkbox" id="override"> 覆盖 agent 自带的系统提示词</label>
+
+  <label class="field">插入位置
+    <select id="position">
+      <option value="append">append — 追加在后面（不破坏提示词缓存）</option>
+      <option value="prepend">prepend — 放在前面（New API 原版）</option>
+    </select>
+  </label>
+
+  <label class="field">仅对这些 agent 生效（逗号分隔，留空 = 全部）
+    <input id="agents" placeholder="claude, codex">
+  </label>
+
+  <label class="field">仅对这些模型前缀生效（逗号分隔，留空 = 全部）
+    <input id="models" placeholder="deepseek, gpt-5">
+  </label>
+
+  <div class="actions">
+    <button id="save">保存</button>
+    <span id="status"></span>
+  </div>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
